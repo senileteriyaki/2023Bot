@@ -1,0 +1,26 @@
+1. kG (gravity) — start here, everything else builds on it.
+- Arm: move it to horizontal. Slowly raise voltage until it just barely holds still (doesn't fall, doesn't rise). That voltage = kG.
+- Elevator: same, at any height — the volts that make it hover without drifting up or down.
+- Check: with kG set and GravityType configured, the mechanism should roughly float in place at 0 PID.
+
+2. kS (static friction).
+- From a dead stop, on top of kG, slowly increase voltage until the mechanism just barely starts to creep. The extra voltage beyond kG that breaks it loose is kS.
+- It's usually small (your elevator's is 0.07).
+
+3. kV (velocity) — the important one.
+- Command a steady voltage that gets it moving at a nice constant speed. Let it settle to constant velocity, then read the actual velocity.
+- Compute: kV = (applied_volts − kS − kG) / measured_velocity.
+- Do this at 2–3 different voltages and average — you should get roughly the same kV each time. It's "volts per unit of speed."
+- Units check: velocity must be in the same units your commands use (rotations/s for an arm, m/s for your elevator).
+
+4. kA (acceleration) — usually skip it.
+- Leave 0 to start. Only add it if, after PID tuning, the mechanism lags during hard accelerations. It's hard to hand-tune; SysId is the real way to get it.
+
+5. kP (proportional) — now add PID to correct leftover error.
+- Command a real position target with Motion Magic. Start kP at 0 and increase until the mechanism tracks the target snappily.
+- Too low: sluggish, settles short of target. Too high: oscillates/buzzes around the target.
+- Back off to just below where oscillation starts.
+
+6. kD (derivative) — damping.
+- If kP alone overshoots or oscillates, add a little kD to damp it. Raise until overshoot is gone and motion is crisp.
+- kI is almost always left 0 — only add a tiny amount if it consistently settles near but never at the target.
