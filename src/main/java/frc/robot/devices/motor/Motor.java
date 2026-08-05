@@ -3,6 +3,8 @@ package frc.robot.devices.motor;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
+
 public class Motor {
 
     public enum Mode {
@@ -53,6 +55,7 @@ public class Motor {
     }
 
     public void setVoltage(double volts) {
+        volts = MathUtil.clamp(volts, -12, 12);
         setOutput(ControlType.VOLTAGE, volts);
         io.setVoltage(volts);
     }
