@@ -1,28 +1,27 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
-package frc.robot.subsystems.elevator;
+package frc.robot.subsystems.wrist;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Robot;
 import frc.robot.devices.motor.Motor;
+import frc.robot.devices.motor.MotorConfig;
 import frc.robot.subsystems.SubsystemBase;
+import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.Wrist2d;
+import frc.robot.subsystems.wrist.WristConstants;
 
-public class Elevator extends SubsystemBase<Elevator.Command> {
-   private static Elevator instance;
+public class Wrist extends SubsystemBase<Wrist.Command> {
+private static Wrist instance;
 
-   private final Elevator2d setpoint2d = new Elevator2d("Elevator/Setpoint2d", Color.kAquamarine);
-   private final Elevator2d measured2d = new Elevator2d("Elevator/Measured2d", Color.kIndianRed);
+   private final Wrist2d setpoint2d = new Wrist2d("Wrist/Setpoint2d", Color.kAquamarine);
+   private final Wrist2d measured2d = new Wrist2d("Wrist/Measured2d", Color.kIndianRed);
 
    public enum Command {
       DISABLED,
       IDLE,
       HOMING,
-      MOVING, 
-      MANUAL
+      MOVING, MANUAL
    }
 
    private enum Homing {
@@ -30,28 +29,27 @@ public class Elevator extends SubsystemBase<Elevator.Command> {
       SETTLED
    }
 
-   private enum TRAVEL {
+   private enum TRAVEL{
       MOVING,
       HOLDING
    }
 
    private final Motor motor;
-   private double target_m = ElevatorConstants.HOME_POSITION_m;
+   private double target_deg = WristConstants.HOME_POSITION_deg;
    private double target_v = 0.0;
    private boolean zeroed = false;
 
-   public static Elevator getInstance() {
-      // FIXED: Checks if null to initialize, rather than if not null.
+   public static Wrist getInstance() {
       if (instance == null) {
-         instance = new Elevator();
-         System.out.println("initialized Elevator");
+         instance = new Wrist();
+         System.out.println("initialized Wrist");
       }
       return instance;
    }
 
-   public Elevator() {
-      super("Elevator");
-      motor = new Motor("ElevatorMotor", ElevatorConstants.config);
+   public Wrist() {
+      super("Wrist");
+      motor = new Motor("WristMotor", WristConstants.config);
       setCommand(Command.IDLE);
    }
 
@@ -62,13 +60,11 @@ public class Elevator extends SubsystemBase<Elevator.Command> {
 
    @Override
    public void outputPeriodic() {
-      Logger.recordOutput("Elevator/Pos_m", motor.getPosition());
-      Logger.recordOutput("Elevator/Velocity_mps", motor.getVelocity());
-      Logger.recordOutput("Elevator/Target_m", target_m);
-      
-      
-      measured2d.setHeight(target_m); 
-      setpoint2d.setHeight(motor.getPosition());
+      Logger.recordOutput("Wrist/Pos_deg", motor.getPosition());
+      Logger.recordOutput("Wrist/Velocity_dps", motor.getVelocity());
+      Logger.recordOutput("Wrist/Target_deg", target_deg);
+      measured2d.setAngle(target_deg);
+      setpoint2d.setAngle(motor.getPosition());
       measured2d.periodic();
       setpoint2d.periodic();
    }
@@ -88,13 +84,13 @@ public class Elevator extends SubsystemBase<Elevator.Command> {
             }
             switch ((Homing) getSubstate()) {
                case SEEKING:
-                  motor.setVoltage(ElevatorConstants.HOMING_VOLTS);
+                  motor.setVoltage(WristConstants.HOMING_VOLTS);
                   if (Robot.isSimulation()) {
-                     motor.zeroPosition(ElevatorConstants.HOME_POSITION_m);
+                     motor.zeroPosition(WristConstants.HOME_POSITION_deg);
                      zeroed = true;
                      setSubstate(Homing.SETTLED);
                   }
-                  break; 
+                  break;
                case SETTLED:
                   setCommand(Command.IDLE);
                   break;
@@ -102,20 +98,21 @@ public class Elevator extends SubsystemBase<Elevator.Command> {
             }
             break;
          case MOVING:
-            if (firstLoop()) {
+            if (firstLoop()){
                setSubstate(TRAVEL.MOVING);
+               
             }
 
-            switch ((TRAVEL) getSubstate()) {
+            switch ((TRAVEL) getSubstate()){
                case MOVING:
-                  motor.setMotionMagic(target_m);
-                  if (atTarget()) {
+                  motor.setMotionMagic(target_deg);
+                  if (atTarget()){
                      setSubstate(TRAVEL.HOLDING);
                   }
                   break;
                case HOLDING:
-                  motor.setMotionMagic(target_m);
-                  if (!atTarget()) {
+                  motor.setMotionMagic(target_deg);
+                  if (!atTarget()){
                      setSubstate(TRAVEL.MOVING);
                   }
                   break;
@@ -129,33 +126,29 @@ public class Elevator extends SubsystemBase<Elevator.Command> {
       }
    }
 
-   public void setTarget(double meters) {
-      target_m = meters;
+   public void setTarget(double angle) {
+      target_deg = angle;
    }
 
    public double getTarget() {
-      return target_m;
+      return target_deg;
    }
 
    public boolean atTarget(double tol) {
-      return (Math.abs(target_m - motor.getPosition()) < tol);
+      return (Math.abs(target_deg - motor.getPosition()) < tol);
    }
 
    public boolean atTarget() {
-      return atTarget(ElevatorConstants.tol);
+      return atTarget(WristConstants.tol);
    }
 
-   public void setManualVoltage(double volts) {
+   public void setManualVoltage(double volts){
       target_v = volts;
       setCommand(Command.MANUAL);
-   }
-
-   public void trackToHeight(double height){
-      setTarget(height);
-      setCommand(Command.MOVING);
    }
 
    public void home(){
       setCommand(Command.HOMING);
    }
+    
 }

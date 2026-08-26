@@ -1,8 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
-package frc.robot.subsystems.elevator;
+package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
@@ -11,12 +7,7 @@ import frc.robot.devices.motor.MotorConfig;
 import frc.robot.devices.motor.MotorConfig.GravityType;
 import frc.robot.generated.TunerConstants;
 
-/** Constants for the Elevator subsystem */
-public class ElevatorConstants {
-    // Modify these values to match your physical robot
-    public static final double HOME_POSITION_m = 0.0;
-    public static final double HOMING_VOLTS = -0.5; 
-    public static final double tol = 0.02; 
+public class ArmConstants {
 
     public static final MotorConfig config = new MotorConfig(8)
         .withCanbus(TunerConstants.kCANBus.getName())
@@ -25,7 +16,14 @@ public class ElevatorConstants {
         .withBrake(true)
         .withSupplyCurrentLimit(40.0)
         .withFFGains(0.0, 0.0, 0.0, 0.0)
-        .withPIDGains(0.0, 0.0, 0.0, GravityType.ELEVATOR)
+        .withPIDGains(0.0, 0.0, 0.0, GravityType.ARM)
         .withMotionMagic(0.0, 0.0, 0.0)
         .withSim(DCMotor.getKrakenX60Foc(2), 1, 0.01);
+
+    public static final double MIN_ANGLE_deg = 0.0;
+    public static final double MAX_ANGLE_deg = 180.0;
+    public static final double tol = 2.0;
+    public static final double HOMING_VOLTS = -0.5;
+    public static final double HOME_POSITION_deg = 0;
+
 }
