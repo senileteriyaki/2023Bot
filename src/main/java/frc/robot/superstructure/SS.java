@@ -111,10 +111,10 @@ public class SS extends SubsystemBase<SS.Command> {
             ARM, ELEV, WRIST);
 
     public static final SSGoal2 HIGH_CONE_SCORE = new SSGoal2(
-            40.0, () -> true,
+            40.0, () -> arm.atTarget(),
             1.60, () -> true,
             35.0, () -> true,
-            ELEV, ARM, WRIST);
+            ARM, ELEV, WRIST);
 
     public static final SSGoal2 HIGH_CUBE_SCORE = new SSGoal2(
             35.0, () -> true,
@@ -209,7 +209,7 @@ public class SS extends SubsystemBase<SS.Command> {
 
         setCommand(nextCommand);
         
-        boolean isCube = has(Flag.WANTS_CUBE);
+        isCube = has(Flag.WANTS_CUBE);
 
         switch (getCommand()) {
             case IDLE:
@@ -299,7 +299,7 @@ public class SS extends SubsystemBase<SS.Command> {
     }*/
 
     private void achieve(SSGoal2 goal){
-        SSGoal2.SUBSYSTEMS currState = goal.order[0];
+        var currState = goal.order[0];
         int numState = 0;
         switch (currState){
             case ARM:

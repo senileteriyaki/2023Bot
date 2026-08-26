@@ -32,5 +32,15 @@ public class SSGoal2 {
         this.order = new SUBSYSTEMS[]{subsystem1, subsystem2, subsystem3};
     }
 
+    public SSGoal2(double arm, double elev, double wrist){
+        this.arm = arm;
+        this.elev = elev;
+        this.wrist = wrist;
+        armDone = () -> true;
+        wristDone = () -> true;
+        elevDone = () -> true;
+        order = new SUBSYSTEMS[]{ARM, ELEV, WRIST};
+    }
+
 
 }
