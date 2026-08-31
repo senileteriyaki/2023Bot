@@ -63,8 +63,8 @@ private static Wrist instance;
       Logger.recordOutput("Wrist/Pos_deg", motor.getPosition());
       Logger.recordOutput("Wrist/Velocity_dps", motor.getVelocity());
       Logger.recordOutput("Wrist/Target_deg", target_deg);
-      measured2d.setAngle(target_deg);
-      setpoint2d.setAngle(motor.getPosition());
+      setpoint2d.setAngle(target_deg);
+      measured2d.setAngle(motor.getPosition());
       measured2d.periodic();
       setpoint2d.periodic();
    }
@@ -150,5 +150,9 @@ private static Wrist instance;
    public void home(){
       setCommand(Command.HOMING);
    }
-    
+   
+   public void trackToAngle(double angle){
+      target_deg = angle;
+      setCommand(Command.MOVING);
+   }
 }

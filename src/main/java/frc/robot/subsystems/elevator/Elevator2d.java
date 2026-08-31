@@ -19,7 +19,7 @@ public class Elevator2d {
         this.name = name;
         mech = new LoggedMechanism2d(4, 4);
         elev = mech.getRoot("Root", 2, 2)
-            .append(new LoggedMechanismLigament2d("Elevator", 0.5, 0, 10, new Color8Bit(color)));
+            .append(new LoggedMechanismLigament2d("Elevator", 0.5, 90, 10, new Color8Bit(color)));
         
     }
 

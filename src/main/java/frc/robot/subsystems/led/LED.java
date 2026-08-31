@@ -25,6 +25,8 @@ public class LED extends SubsystemBase<LED.Command> {
             LEDPattern.solid(Color.kYellow).blink(Seconds.of(0.5))),
         CLIMBING(
             LEDPattern.solid(Color.kGreen).blink(Seconds.of(0.5))),
+        SCORING(
+            LEDPattern.solid(Color.kOrangeRed).blink(Seconds.of(0.5))),
         ERROR(
             LEDPattern.solid(Color.kRed));
 

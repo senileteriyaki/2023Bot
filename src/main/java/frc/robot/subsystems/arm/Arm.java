@@ -64,8 +64,8 @@ public class Arm extends SubsystemBase<Arm.Command> {
       Logger.recordOutput("Arm/Pos_deg", motor.getPosition());
       Logger.recordOutput("Arm/Velocity_dps", motor.getVelocity());
       Logger.recordOutput("Arm/Target_deg", target_deg);
-      measured2d.setAngle(target_deg);
-      setpoint2d.setAngle(motor.getPosition());
+      setpoint2d.setAngle(target_deg);
+      measured2d.setAngle(motor.getPosition());
       measured2d.periodic();
       setpoint2d.periodic();
    }

@@ -67,8 +67,8 @@ public class Elevator extends SubsystemBase<Elevator.Command> {
       Logger.recordOutput("Elevator/Target_m", target_m);
       
       
-      measured2d.setHeight(target_m); 
-      setpoint2d.setHeight(motor.getPosition());
+      setpoint2d.setHeight(target_m); 
+      measured2d.setHeight(motor.getPosition());
       measured2d.periodic();
       setpoint2d.periodic();
    }

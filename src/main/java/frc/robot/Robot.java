@@ -24,6 +24,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.obstacles.ObstacleAvoidance;
 import frc.robot.subsystems.tracking.Tracking;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.superstructure.SS;
 
 import org.littletonrobotics.junction.LogFileUtil;
@@ -48,6 +49,7 @@ public class Robot extends LoggedRobot {
     private ControlScheme controls;
     private Arm arm;
     private Elevator elevator;
+    private Wrist wrist;
 
 
     @Override
@@ -118,13 +120,14 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         Threads.setCurrentThreadPriority(true, 99);
 
-        controls.update();
+        //controls.update();
         superstructure.periodic();
         obstacles.periodic();
         tracking.periodic();
         drive.periodic();
         vision.periodic();
         arm.periodic();
+        wrist.periodic();
         elevator.periodic();
         PerfTracker.periodic();
         Threads.setCurrentThreadPriority(false, 10);
@@ -151,6 +154,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void teleopInit() {
         controls.init();
+        superstructure.enable(SS.Flag.SCORE_HIGH);
+        System.out.println("fdifdfsdf");
     }
 
     @Override
@@ -182,6 +187,7 @@ public class Robot extends LoggedRobot {
         superstructure = SS.getInstance();
         arm = Arm.getInstance();
         elevator = Elevator.getInstance();
+        wrist = Wrist.getInstance();
         controls = new ControlScheme(superstructure, drive);
     }
 

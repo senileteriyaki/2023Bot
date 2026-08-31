@@ -16,8 +16,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class SS extends SubsystemBase<SS.Command> {
 
-
-
     public enum Flag {
         HOME,
         INTAKE_GROUND,
@@ -25,7 +23,7 @@ public class SS extends SubsystemBase<SS.Command> {
         SCORE_LOW,
         SCORE_MID,
         SCORE_HIGH,
-        WANTS_CUBE, 
+        WANTS_CUBE,
         MANUAL_UP,
         MANUAL_DOWN,
         PRECLIMB,
@@ -45,9 +43,6 @@ public class SS extends SubsystemBase<SS.Command> {
         CLIMB_CURL
     }
 
-
-
-
     private static final double MANUAL_VOLTS = 2.0;
 
     private static SS instance;
@@ -60,79 +55,26 @@ public class SS extends SubsystemBase<SS.Command> {
     private final LED led;
     private final EndEffector ee;
     private final Elevator elevator;
-    private boolean isCube = false;
+    private boolean isCube = true;
 
-        public static final SSGoal2 STOW = new SSGoal2(
-            0.0, () -> true,
-            0.0, () -> true,
-            0.0, () -> true,
-            WRIST, ARM, ELEV);
 
-    public static final SSGoal2 GROUND_INTAKE_CONE = new SSGoal2(
-            -20.0, () -> true,
-            0.05, () -> true,
-            -10.0, () -> true,
-            ARM, WRIST, ELEV);
+    private SSGoal2 currentAchieveGoal = null;
+    private SSGoal2.SUBSYSTEMS currState = null;
+    private int numState = 0;
 
-    public static final SSGoal2 GROUND_INTAKE_CUBE = new SSGoal2(
-            -25.0, () -> true,
-            0.05, () -> true,
-            0.0, () -> true,
-            ARM, WRIST, ELEV);
+    public static SSGoal2 STOW;
+    public static SSGoal2 GROUND_INTAKE_CONE;
+    public static SSGoal2 GROUND_INTAKE_CUBE;
+    public static SSGoal2 SHELF_INTAKE_CONE;
+    public static SSGoal2 SHELF_INTAKE_CUBE;
+    public static SSGoal2 LOW_SCORE;
+    public static SSGoal2 MID_CONE_SCORE;
+    public static SSGoal2 MID_CUBE_SCORE;
+    public static SSGoal2 HIGH_CONE_SCORE;
+    public static SSGoal2 HIGH_CUBE_SCORE;
+    public static SSGoal2 CLIMB_STAGE_1;
 
-    public static final SSGoal2 SHELF_INTAKE_CONE = new SSGoal2(
-            10.0, () -> true,
-            1.00, () -> true,
-            0.0, () -> true,
-            ELEV, ARM, WRIST);
-
-    public static final SSGoal2 SHELF_INTAKE_CUBE = new SSGoal2(
-            10.0, () -> true,
-            1.00, () -> true,
-            5.0, () -> true,
-            ELEV, ARM, WRIST);
-
-    public static final SSGoal2 LOW_SCORE = new SSGoal2(
-            -15.0, () -> true,
-            0.10, () -> true,
-            -5.0, () -> true,
-            ELEV, WRIST, ARM);
-
-    public static final SSGoal2 MID_CONE_SCORE = new SSGoal2(
-            25.0, () -> true,
-            0.90, () -> true,
-            20.0, () -> true,
-            ARM, ELEV, WRIST);
-
-    public static final SSGoal2 MID_CUBE_SCORE = new SSGoal2(
-            20.0, () -> true,
-            0.85, () -> true,
-            10.0, () -> true,
-            ARM, ELEV, WRIST);
-
-    public static final SSGoal2 HIGH_CONE_SCORE = new SSGoal2(
-            40.0, () -> arm.atTarget(),
-            1.60, () -> true,
-            35.0, () -> true,
-            ARM, ELEV, WRIST);
-
-    public static final SSGoal2 HIGH_CUBE_SCORE = new SSGoal2(
-            35.0, () -> true,
-            1.55, () -> true,
-            15.0, () -> true,
-            ELEV, ARM, WRIST);
-
-    public static final SSGoal2 CLIMB_STAGE_1 = new SSGoal2(
-            50.0, () -> true,
-            0.60, () -> true,
-            45.0, () -> true,
-            ELEV, ARM, WRIST);
-
-    public static final SSGoal2 CLIMB_STAGE_2 = new SSGoal2(
-            -10.0, () -> true,
-            0.00, () -> true,
-            -20.0, () -> true,
-            ARM, WRIST, ELEV);
+    public static SSGoal2 CLIMB_STAGE_2;
 
     public static SS getInstance() {
         if (instance == null) {
@@ -149,8 +91,79 @@ public class SS extends SubsystemBase<SS.Command> {
         led = LED.getInstance();
         ee = EndEffector.getInstance();
         wrist = Wrist.getInstance();
-        
+
         setCommand(Command.IDLE);
+
+        HIGH_CONE_SCORE = new SSGoal2(
+                40.0, arm::atTarget,
+                1.60, () -> true,
+                35.0, () -> true,
+                ARM, ELEV, WRIST);
+
+        STOW = new SSGoal2(
+                0.0, () -> true,
+                0.0, () -> true,
+                0.0, () -> true,
+                WRIST, ARM, ELEV);
+
+        GROUND_INTAKE_CONE = new SSGoal2(
+                -20.0, () -> true,
+                0.05, () -> true,
+                -10.0, () -> true,
+                ARM, WRIST, ELEV);
+
+        GROUND_INTAKE_CUBE = new SSGoal2(
+                -25.0, () -> true,
+                0.05, () -> true,
+                0.0, () -> true,
+                ARM, WRIST, ELEV);
+
+        SHELF_INTAKE_CONE = new SSGoal2(
+                10.0, () -> true,
+                1.00, () -> true,
+                0.0, () -> true,
+                ELEV, ARM, WRIST);
+        SHELF_INTAKE_CUBE = new SSGoal2(
+                10.0, () -> true,
+                1.00, () -> true,
+                5.0, () -> true,
+                ELEV, ARM, WRIST);
+
+        LOW_SCORE = new SSGoal2(
+                -15.0, () -> true,
+                0.10, () -> true,
+                -5.0, () -> true,
+                ELEV, WRIST, ARM);
+
+        MID_CONE_SCORE = new SSGoal2(
+                25.0, () -> true,
+                0.90, () -> true,
+                20.0, () -> true,
+                ARM, ELEV, WRIST);
+
+        MID_CUBE_SCORE = new SSGoal2(
+                20.0, () -> true,
+                0.85, () -> true,
+                10.0, () -> true,
+                ARM, ELEV, WRIST);
+
+        HIGH_CUBE_SCORE = new SSGoal2(
+                35.0, arm::atTarget,
+                1.55, () -> true,
+                15.0, () -> true,
+                ARM, ELEV, WRIST);
+
+        CLIMB_STAGE_1 = new SSGoal2(
+                50.0, () -> true,
+                0.60, () -> true,
+                45.0, () -> true,
+                ELEV, ARM, WRIST);
+
+        CLIMB_STAGE_2 = new SSGoal2(
+                -10.0, () -> true,
+                0.00, () -> true,
+                -20.0, () -> true,
+                ARM, WRIST, ELEV);
     }
 
     public void enable(Flag flag) {
@@ -178,37 +191,40 @@ public class SS extends SubsystemBase<SS.Command> {
     }
 
     @Override
-    protected void inputPeriodic() {}
-    
+    protected void inputPeriodic() {
+    }
+
     @Override
-    protected void outputPeriodic() {}
+    protected void outputPeriodic() {
+        String[] active = flags.stream().map(Enum::name).toArray(String[]::new);
+        Logger.recordOutput("Superstructure/Flags", active);
+        
+    }
 
     @Override
     protected void handle() {
-        Command nextCommand = Command.IDLE;
 
         if (has(Flag.HOME)) {
-            nextCommand = Command.HOMING;
+            setCommand(Command.HOMING);
         } else if (has(Flag.MANUAL_UP) || has(Flag.MANUAL_DOWN)) {
-            nextCommand = Command.MANUAL_CONTROL;
+            setCommand(Command.MANUAL_CONTROL);
         } else if (has(Flag.PRECLIMB)) {
-            nextCommand = Command.CLIMB_PLACE;
+            setCommand(Command.CLIMB_PLACE);
         } else if (has(Flag.CLIMB)) {
-            nextCommand = Command.CLIMB_CURL;
+            setCommand(Command.CLIMB_CURL);
         } else if (has(Flag.SCORE_HIGH)) {
-            nextCommand = Command.SCORE_HIGH;
+            setCommand(Command.SCORE_HIGH);
         } else if (has(Flag.SCORE_MID)) {
-            nextCommand = Command.SCORE_MID;
+            setCommand(Command.SCORE_MID);
         } else if (has(Flag.SCORE_LOW)) {
-            nextCommand = Command.SCORE_LOW;
+            setCommand(Command.SCORE_LOW);
         } else if (has(Flag.INTAKE_SHELF)) {
-            nextCommand = Command.INTAKING_SHELF;
+            setCommand(Command.INTAKING_SHELF);
         } else if (has(Flag.INTAKE_GROUND)) {
-            nextCommand = Command.INTAKING_GROUND;
+            setCommand(Command.INTAKING_GROUND);
         }
 
-        setCommand(nextCommand);
-        
+
         isCube = has(Flag.WANTS_CUBE);
 
         switch (getCommand()) {
@@ -216,49 +232,55 @@ public class SS extends SubsystemBase<SS.Command> {
                 achieve(STOW);
                 ee.setCommand(EndEffector.Command.IDLE);
                 break;
-                
+
             case HOMING:
                 elevator.home();
                 arm.home();
                 wrist.home();
                 ee.setCommand(EndEffector.Command.DISABLED);
                 break;
-                
+
             case INTAKING_GROUND:
                 achieve(isCube ? GROUND_INTAKE_CUBE : GROUND_INTAKE_CONE);
-                if (achieved()){ 
+                if (achieved()) {
                     runEndEffectorIntakeMode();
                 }
+                led.setCommand(LED.Command.INTAKE);
                 break;
-                
+
             case INTAKING_SHELF:
                 achieve(isCube ? SHELF_INTAKE_CUBE : SHELF_INTAKE_CONE);
-                if (achieved()){ 
+                if (achieved()) {
                     runEndEffectorIntakeMode();
                 }
+                led.setCommand(LED.Command.INTAKE);
                 break;
-                
+
             case SCORE_LOW:
                 achieve(LOW_SCORE);
                 if (achieved()) {
                     runEndEffectorScoringMode();
                 }
+                led.setCommand(LED.Command.OUTTAKE);
                 break;
-                
+
             case SCORE_MID:
                 achieve(isCube ? MID_CUBE_SCORE : MID_CONE_SCORE);
                 if (achieved()) {
                     runEndEffectorScoringMode();
                 }
+                led.setCommand(LED.Command.SCORING);
+
                 break;
-                
+
             case SCORE_HIGH:
                 achieve(isCube ? HIGH_CUBE_SCORE : HIGH_CONE_SCORE);
                 if (achieved()) {
                     runEndEffectorScoringMode();
                 }
+                led.setCommand(LED.Command.SCORING);
                 break;
-                
+
             case MANUAL_CONTROL:
                 elevator.setManualVoltage(has(Flag.MANUAL_UP) ? MANUAL_VOLTS : -MANUAL_VOLTS);
                 ee.setCommand(EndEffector.Command.IDLE);
@@ -266,17 +288,18 @@ public class SS extends SubsystemBase<SS.Command> {
             case CLIMB_PLACE:
                 achieve(CLIMB_STAGE_1);
                 ee.setCommand(EndEffector.Command.IDLE);
+                led.setCommand(LED.Command.CLIMBING);
                 break;
             case CLIMB_CURL:
-                if (!achieved()){
+                if (!achieved()) {
                     setCommand(Command.CLIMB_PLACE);
                 }
                 achieve(CLIMB_STAGE_2);
                 ee.setCommand(EndEffector.Command.IDLE);
+                led.setCommand(LED.Command.CLIMBING);
                 break;
         }
     }
-
 
     private void runEndEffectorScoringMode() {
         if (has(Flag.SCORE_LOW) || has(Flag.SCORE_MID) || has(Flag.SCORE_HIGH)) {
@@ -292,33 +315,39 @@ public class SS extends SubsystemBase<SS.Command> {
         }
     }
 
-    /*private void achieve(SSGoal goal) {
-        arm.setTarget(goal.arm);
-        elevator.setTarget(goal.elevator);
-        wrist.setTarget(goal.wrist);
-    }*/
+    /*
+     * private void achieve(SSGoal goal) {
+     * arm.setTarget(goal.arm);
+     * elevator.setTarget(goal.elevator);
+     * wrist.setTarget(goal.wrist);
+     * }
+     */
 
-    private void achieve(SSGoal2 goal){
-        var currState = goal.order[0];
-        int numState = 0;
-        switch (currState){
+    private void achieve(SSGoal2 goal) {
+        if (goal != currentAchieveGoal) {
+            currentAchieveGoal = goal;
+            numState = 0;
+            currState = goal.order[0];
+        }
+
+        switch (currState) {
             case ARM:
-                arm.setTarget(goal.arm);
-                if (goal.armDone.getAsBoolean()){
+                arm.trackToAngle(goal.arm);
+                if (goal.armDone.getAsBoolean() && numState < goal.order.length - 1) {
                     numState += 1;
                     currState = goal.order[numState];
                 }
                 break;
             case ELEV:
-                elevator.setTarget(goal.elev);
-                if (goal.elevDone.getAsBoolean()){
+                elevator.trackToHeight(goal.elev);
+                if (goal.elevDone.getAsBoolean() && numState < goal.order.length - 1) {
                     numState += 1;
                     currState = goal.order[numState];
                 }
                 break;
             case WRIST:
-                wrist.setTarget(goal.arm);
-                if (goal.wristDone.getAsBoolean()){
+                wrist.trackToAngle(goal.wrist);
+                if (goal.wristDone.getAsBoolean() && numState < goal.order.length - 1) {
                     numState += 1;
                     currState = goal.order[numState];
                 }
@@ -326,8 +355,6 @@ public class SS extends SubsystemBase<SS.Command> {
         }
 
     }
-
-
 
     private boolean achieved() {
         return arm.atTarget() && elevator.atTarget() && wrist.atTarget();

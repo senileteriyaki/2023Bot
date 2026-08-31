@@ -16,7 +16,7 @@ public class SSGoal2 {
     public final double arm; //positions of the subsystems
     public final double wrist;
     public final double elev;
-    public final BooleanSupplier armDone; //suppliers for when they're done, usually atTarget if we need to wait, x -> true if not
+    public final BooleanSupplier armDone; //suppliers for when they're done, usually atTarget if we need to wait, () -> true if not
     public final BooleanSupplier elevDone;
     public final BooleanSupplier wristDone;
     public final SUBSYSTEMS[] order; //order in which to move the subsystems
@@ -39,7 +39,7 @@ public class SSGoal2 {
         armDone = () -> true;
         wristDone = () -> true;
         elevDone = () -> true;
-        order = new SUBSYSTEMS[]{ARM, ELEV, WRIST};
+        order = new SUBSYSTEMS[]{SUBSYSTEMS.ARM, SUBSYSTEMS.ELEV, SUBSYSTEMS.WRIST};
     }
 
 

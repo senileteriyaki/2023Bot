@@ -11,21 +11,19 @@ import frc.robot.devices.motor.MotorConfig;
 import frc.robot.devices.motor.MotorConfig.GravityType;
 import frc.robot.generated.TunerConstants;
 
-/** Constants for the Elevator subsystem */
 public class ElevatorConstants {
-    // Modify these values to match your physical robot
     public static final double HOME_POSITION_m = 0.0;
-    public static final double HOMING_VOLTS = -0.5; 
-    public static final double tol = 0.02; 
+    public static final double HOMING_VOLTS = -0.5;
+    public static final double tol = 0.02;
 
-    public static final MotorConfig config = new MotorConfig(8)
-        .withCanbus(TunerConstants.kCANBus.getName())
-        .withInverted(true)
-        .withFollower(9, MotorAlignmentValue.Opposed)
-        .withBrake(true)
-        .withSupplyCurrentLimit(40.0)
-        .withFFGains(0.0, 0.0, 0.0, 0.0)
-        .withPIDGains(0.0, 0.0, 0.0, GravityType.ELEVATOR)
-        .withMotionMagic(0.0, 0.0, 0.0)
-        .withSim(DCMotor.getKrakenX60Foc(2), 1, 0.01);
+    public static final MotorConfig config = new MotorConfig(10)
+            .withCanbus(TunerConstants.kCANBus.getName())
+            .withInverted(true)
+            .withFollower(11, MotorAlignmentValue.Opposed)
+            .withBrake(true)
+            .withSupplyCurrentLimit(40.0)
+            .withFFGains(0.2, 3.0, 0.05, 0.9)
+            .withPIDGains(60.0, 0.0, 2.0, GravityType.ELEVATOR)
+            .withMotionMagic(2.0, 6.0, 60.0)
+            .withSim(DCMotor.getKrakenX60Foc(2), 12.0, 10.0);
 }
