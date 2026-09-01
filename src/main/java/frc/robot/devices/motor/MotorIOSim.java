@@ -77,7 +77,19 @@ public class MotorIOSim implements MotorIO {
     }
 
     private double gravityFeedforward() {
-        return config.gravity == MotorConfig.GravityType.NONE ? 0.0 : config.kG;
+        if (config.gravity == MotorConfig.GravityType.NONE){
+            return 0.0;
+        }
+
+        if (config.gravity == MotorConfig.GravityType.ELEVATOR){
+            return config.kG;
+        }
+
+        if (config.gravity == MotorConfig.GravityType.ARM){
+            return config.kG * Math.cos(sim.getAngularPositionRotations()*2*Math.PI);
+        }
+
+        return config.kG;
     }
 
     @Override

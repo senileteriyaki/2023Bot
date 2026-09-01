@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.PathingMode;
 import frc.robot.subsystems.drive.PathingOverride;
@@ -13,6 +14,7 @@ public class ControlScheme {
 
     private final SS ss;
     private final Drive drive;
+    private final Joystick keyboard = new Joystick(2);
 
     public ControlScheme(SS ss, Drive drive) {
         this.ss = ss;
@@ -56,6 +58,11 @@ public class ControlScheme {
                 ss.enable(Flag.WANTS_CUBE);
             }
         }
+
+        ss.set(Flag.HOME, keyboard.getRawButton(1));
+        ss.set(Flag.SCORE_LOW, keyboard.getRawButton(2));
+        ss.set(Flag.SCORE_MID, keyboard.getRawButton(3));
+        ss.set(Flag.SCORE_HIGH, keyboard.getRawButton(4));
         
 
     }

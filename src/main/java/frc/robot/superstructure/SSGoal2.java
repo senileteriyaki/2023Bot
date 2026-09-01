@@ -2,9 +2,6 @@ package frc.robot.superstructure;
 
 import java.util.function.BooleanSupplier;
 
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.wrist.Wrist;
 
 public class SSGoal2 {
     public static enum SUBSYSTEMS{

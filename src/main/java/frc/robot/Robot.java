@@ -120,7 +120,7 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         Threads.setCurrentThreadPriority(true, 99);
 
-        //controls.update();
+        controls.update();
         superstructure.periodic();
         obstacles.periodic();
         tracking.periodic();
@@ -154,10 +154,9 @@ public class Robot extends LoggedRobot {
     @Override
     public void teleopInit() {
         controls.init();
-        superstructure.enable(SS.Flag.SCORE_HIGH);
         System.out.println("fdifdfsdf");
     }
-
+// 
     @Override
     public void teleopPeriodic() {
     }

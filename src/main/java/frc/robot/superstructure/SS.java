@@ -1,6 +1,5 @@
 package frc.robot.superstructure;
 
-import frc.robot.ControlScheme;
 import frc.robot.subsystems.SubsystemBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
@@ -40,7 +39,8 @@ public class SS extends SubsystemBase<SS.Command> {
         SCORE_HIGH,
         MANUAL_CONTROL,
         CLIMB_PLACE,
-        CLIMB_CURL
+        CLIMB_CURL,
+        STOWING
     }
 
     private static final double MANUAL_VOLTS = 2.0;
@@ -222,6 +222,8 @@ public class SS extends SubsystemBase<SS.Command> {
             setCommand(Command.INTAKING_SHELF);
         } else if (has(Flag.INTAKE_GROUND)) {
             setCommand(Command.INTAKING_GROUND);
+        } else {
+            setCommand(Command.STOWING);
         }
 
 
@@ -297,6 +299,10 @@ public class SS extends SubsystemBase<SS.Command> {
                 achieve(CLIMB_STAGE_2);
                 ee.setCommand(EndEffector.Command.IDLE);
                 led.setCommand(LED.Command.CLIMBING);
+                break;
+            case STOWING:
+                achieve(STOW);
+                ee.setCommand(EndEffector.Command.IDLE);
                 break;
         }
     }
