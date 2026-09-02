@@ -103,7 +103,7 @@ public class SS extends SubsystemBase<SS.Command> {
         STOW = new SSGoal2(
                 0.0, () -> true,
                 0.0, () -> true,
-                0.0, wrist::positive,
+                145, wrist::positive,
                 WRIST, ARM, ELEV);
 
         GROUND_INTAKE_CONE = new SSGoal2(
@@ -155,8 +155,8 @@ public class SS extends SubsystemBase<SS.Command> {
                 ARM, ELEV, WRIST);
 
         CLIMB_STAGE_1 = new SSGoal2(
-                50.0, () -> true,
-                0.60, () -> true,
+                100.0, () -> true,
+                0.00, () -> true,
                 45.0, () -> true,
                 ELEV, ARM, WRIST);
 
