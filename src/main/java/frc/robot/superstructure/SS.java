@@ -103,26 +103,27 @@ public class SS extends SubsystemBase<SS.Command> {
         STOW = new SSGoal2(
                 0.0, () -> true,
                 0.0, () -> true,
-                0.0, () -> true,
+                0.0, wrist::positive,
                 WRIST, ARM, ELEV);
 
         GROUND_INTAKE_CONE = new SSGoal2(
                 -20.0, () -> true,
-                0.05, () -> true,
+                0.5, elevator::atTarget,
                 -10.0, () -> true,
-                ARM, WRIST, ELEV);
+                ELEV, ARM, WRIST);
 
         GROUND_INTAKE_CUBE = new SSGoal2(
                 -25.0, () -> true,
-                0.05, () -> true,
+                0.5, elevator::atTarget,
                 0.0, () -> true,
-                ARM, WRIST, ELEV);
+                ELEV, ARM, WRIST);
 
         SHELF_INTAKE_CONE = new SSGoal2(
                 10.0, () -> true,
                 1.00, () -> true,
                 0.0, () -> true,
                 ELEV, ARM, WRIST);
+
         SHELF_INTAKE_CUBE = new SSGoal2(
                 10.0, () -> true,
                 1.00, () -> true,
@@ -130,19 +131,19 @@ public class SS extends SubsystemBase<SS.Command> {
                 ELEV, ARM, WRIST);
 
         LOW_SCORE = new SSGoal2(
-                -15.0, () -> true,
+                5.0, arm::atTarget,
                 0.10, () -> true,
                 -5.0, () -> true,
                 ELEV, WRIST, ARM);
 
         MID_CONE_SCORE = new SSGoal2(
-                25.0, () -> true,
+                25.0, arm::atTarget,
                 0.90, () -> true,
                 20.0, () -> true,
                 ARM, ELEV, WRIST);
 
         MID_CUBE_SCORE = new SSGoal2(
-                20.0, () -> true,
+                20.0, arm::atTarget,
                 0.85, () -> true,
                 10.0, () -> true,
                 ARM, ELEV, WRIST);

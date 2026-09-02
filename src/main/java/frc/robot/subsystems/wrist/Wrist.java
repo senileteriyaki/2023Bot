@@ -155,4 +155,8 @@ private static Wrist instance;
       target_deg = angle;
       setCommand(Command.MOVING);
    }
+
+   public boolean positive(){
+      return (motor.getPosition() > 0);
+   }
 }
