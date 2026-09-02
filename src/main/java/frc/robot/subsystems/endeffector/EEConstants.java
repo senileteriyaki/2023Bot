@@ -8,10 +8,10 @@ import frc.robot.devices.motor.MotorConfig.GravityType;
 import frc.robot.generated.TunerConstants;
 
 public class EEConstants {
-    public static final MotorConfig config = new MotorConfig(8)
+    public static final MotorConfig config = new MotorConfig(15)
         .withCanbus(TunerConstants.kCANBus.getName())
         .withInverted(true)
-        .withFollower(9, MotorAlignmentValue.Opposed)
+        .withFollower(16, MotorAlignmentValue.Opposed)
         .withBrake(true)
         .withSupplyCurrentLimit(40.0)
         .withFFGains(0.0, 0.0, 0.0, 0.0)
